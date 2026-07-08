@@ -584,15 +584,21 @@ function getLog(){return JSON.parse(localStorage.getItem('amsLog')||'[]');}
 function addLog(a,d){const l=getLog();l.unshift({user:currentUser?.username||'?',action:a,detail:d,time:new Date().toLocaleString()});if(l.length>200)l.length=200;localStorage.setItem('amsLog',JSON.stringify(l));}
 
 // ═══════════ INIT ═══════════
+// ── Hardcoded Google Sheets URL ──────────────────────────────
+const HARDCODED_SHEET_URL = "https://script.google.com/macros/s/AKfycbyY1nFHk2LraZQOCc1QLLEpXZkoiQh3l9Rc2zCcIJ9hIBUnwU6cWUn0Q6zT0rD6ng4HYg/exec";
+
 window.onload=function(){
   let u=getUsers();
   if(!u.length){u=[{username:'admin',password:'admin123',role:'admin'}];setUsers(u);}
+  // Always ensure hardcoded URL is set (overrides any old saved URL)
+  localStorage.setItem('amsSheetUrl', HARDCODED_SHEET_URL);
   updateRooms(); renderDraft(); fillPayCust();
   const sess=sessionStorage.getItem('amsUser');
   if(sess){try{currentUser=JSON.parse(sess);unlock();}catch(e){}}
-  const url=localStorage.getItem('amsSheetUrl')||'';
-  const el=document.getElementById('curUrl');if(el)el.textContent=url?url.substring(0,60)+'...':'Not set';
-  const si=document.getElementById('sheetUrl');if(si)si.value=url;
+  const el=document.getElementById('curUrl');
+  if(el)el.textContent=HARDCODED_SHEET_URL.substring(0,60)+'...';
+  const si=document.getElementById('sheetUrl');
+  if(si)si.value=HARDCODED_SHEET_URL;
 };
 
 // ═══════════ LOGIN ═══════════
